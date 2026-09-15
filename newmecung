@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Mê Cung Neon Deluxe - Chill & Skins</title>
+  <style>
+    :root {
+      --bg-color: #060814;
+      --panel-bg: rgba(18, 24, 48, 0.95);
+      --primary: #00f0ff;
+      --secondary: #ff007f;
+      --accent: #ffe600;
+      --text: #ffffff;
+      --map-theme-glow: #00f0ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 240, 255, 0.2) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(255, 0, 127, 0.2) 0%, transparent 40%);
+    }
+
+    .container {
+      position: relative;
+      width: 100%;
+      max-width: 520px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding: 10px 15px;
+      background: var(--panel-bg);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.2);
+    }
+
+    .title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--primary);
+      text-shadow: 0 0 10px var(--primary);
+    }
+
+    .stats-bar {
+      display: flex;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .stat-value {
+      color: var(--accent);
+    }
+
+    .top-controls {
+      display: flex;
+      gap: 6px;
+    }
+
+    #game-wrapper {
+      position: relative;
+      width: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 0 35px var(--map-theme-glow);
+      border: 3px solid var(--primary);
+      background: #020308;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    canvas {
+      display: block;
+    }
+
+    #toast-msg {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 0, 127, 0.95);
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      box-shadow: 0 0 15px rgba(255, 0, 127, 0.6);
+      z-index: 30;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    #toast-msg.show {
+      opacity: 1;
+    }
+
+    .screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(6, 8, 20, 0.96);
+      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 20;
+      padding: 25px;
+      text-align: center;
+      transition: opacity 0.3s ease;
+    }
+
+    .screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .screen h1 {
+      font-size: 2.2rem;
+      color: var(--primary);
+      text-shadow: 0 0 15px var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .screen h2 {
+      font-size: 1.5rem;
+      color: var(--secondary);
+      margin-bottom: 15px;
+    }
+
+    .screen p {
+      color: #a0a5c0;
+      margin-bottom: 15px;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, var(--primary), #0077ff);
+      color: #000;
+      font-weight: 800;
+      border: none;
+      padding: 12px 26px;
+      font-size: 1rem;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+      transition: all 0.2s ease;
+      margin: 5px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.8);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, var(--secondary), #a000ff);
+      color: #fff;
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.4);
+    }
+
+    .btn-hint {
+      background: linear-gradient(135deg, #ffe600, #ff8800);
+      color: #000;
+      box-shadow: 0 0 15px rgba(255, 230, 0, 0.4);
+      font-size: 0.9rem;
+      padding: 10px 20px;
+    }
+
+    .btn-icon {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      border-radius: 50%;
+      font-size: 1.1rem;
+    }
+
+    .level-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      width: 100%;
+      max-width: 340px;
+      margin-bottom: 15px;
+      max-height: 200px;
+      overflow-y: auto;
+      padding: 5px;
+    }
+
+    .level-btn {
+      background: var(--panel-bg);
+      border: 2px solid rgba(0, 240, 255, 0.3);
+      color: #fff;
+      padding: 12px 0;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .level-btn.unlocked {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .level-btn.unlocked:hover {
+      background: var(--primary);
+      color: #000;
+    }
+
+    .level-btn.locked {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    /* Selection panels inside modal */
+    .selection-box {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 15px;
+      width: 100%;
+      max-width: 380px;
+    }
+
+    .selection-title {
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .grid-options {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .option-item {
+      padding: 8px 14px;
+      border-radius: 10px;
+      background: var(--panel-bg);
+      border: 2px solid #333;
+      color: #fff;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .option-item.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+      background: rgba(255, 230, 0, 0.15);
+      color: var(--accent);
+    }
+
+    .bottom-bar {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .touch-controls {
+      display: grid;
+      grid-template-columns: repeat(3, 58px);
+      grid-template-rows: repeat(3, 58px);
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .dbtn {
+      background: var(--panel-bg);
+      border: 2px solid rgba(0, 240, 255, 0.4);
+      color: var(--primary);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+
+    .dbtn:active {
+      background: var(--primary);
+      color: #000;
+      transform: scale(0.95);
+    }
+
+    .dbtn-up { grid-column: 2; grid-row: 1; }
+    .dbtn-left { grid-column: 1; grid-row: 2; }
+    .dbtn-down { grid-column: 2; grid-row: 3; }
+    .dbtn-right { grid-column: 3; grid-row: 2; }
+
+    @media (min-width: 768px) {
+      .touch-controls {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="title">🌌 Mê Cung Neon</div>
+      <div class="stats-bar">
+        <div class="stat-item">Màn: <span id="current-level-display" class="stat-value">1</span></div>
+        <div class="stat-item">💎 <span id="gems-display" class="stat-value">10</span></div>
+      </div>
+      <div class="top-controls">
+        <!-- 2 icon điều chỉnh âm nhạc & skin/map trực tiếp -->
+        <button id="btn-music-toggle" class="btn btn-secondary btn-icon" title="Đổi Nhạc Chill">🎵</button>
+        <button id="btn-custom-toggle" class="btn btn-icon" title="Đổi Skin & Map">🎨</button>
+        <button id="btn-home" class="btn btn-secondary btn-icon" title="Menu Chính">🏠</button>
+      </div>
+    </header>
+
+    <div id="game-wrapper">
+      <canvas id="gameCanvas" width="480" height="480"></canvas>
+
+      <div id="toast-msg">Thông báo</div>
+
+      <!-- Màn hình chính -->
+      <div id="start-screen" class="screen">
+        <h1>MÊ CUNG NEON</h1>
+        <p>Hòa mình vào giai điệu nhạc Chill quốc tế & tùy biến Neon rực rỡ!</p>
+
+        <div class="selection-box">
+          <div class="selection-title">Chọn Skin Nhân Vật</div>
+          <div class="grid-options" id="skin-options">
+            <div class="option-item selected" data-skin="🟢">🟢 Neon Ball</div>
+            <div class="option-item" data-skin="🤖">🤖 Robot</div>
+            <div class="option-item" data-skin="🐱">🐱 Neko</div>
+            <div class="option-item" data-skin="🚀">🚀 Rocket</div>
+            <div class="option-item" data-skin="👻">👻 Ghost</div>
+          </div>
+        </div>
+
+        <div class="selection-box">
+          <div class="selection-title">Chọn Giao Diện Map Neon</div>
+          <div class="grid-options" id="map-options">
+            <div class="option-item selected" data-map="cyan" style="border-color:#00f0ff">Cyan Cyber</div>
+            <div class="option-item" data-map="pink" style="border-color:#ff007f">Neon Pink</div>
+            <div class="option-item" data-map="gold" style="border-color:#ffe600">Golden Gold</div>
+          </div>
+        </div>
+
+        <button id="btn-start" class="btn">CHƠI NGAY ▶</button>
+      </div>
+
+      <!-- Màn hình chọn màn chơi -->
+      <div id="level-screen" class="screen hidden">
+        <h2>CHỌN MÀN CHƠI</h2>
+        <div class="level-grid" id="level-grid"></div>
+        <button id="btn-back-start" class="btn btn-secondary">QUAY LẠI MENU</button>
+      </div>
+
+      <!-- Bảng tùy chỉnh nhanh khi bấm icon cọ vẽ 🎨 trong game -->
+      <div id="custom-screen" class="screen hidden">
+        <h2>TÙY CHỈNH NHANH</h2>
+        
+        <div class="selection-box">
+          <div class="selection-title">Đổi Skin Nhân Vật</div>
+          <div class="grid-options" id="modal-skin-options">
+            <div class="option-item" data-skin="🟢">🟢 Ball</div>
+            <div class="option-item" data-skin="🤖">🤖 Robot</div>
+            <div class="option-item" data-skin="🐱">🐱 Neko</div>
+            <div class="option-item" data-skin="🚀">🚀 Rocket</div>
+            <div class="option-item" data-skin="👻">👻 Ghost</div>
+          </div>
+        </div>
+
+        <div class="selection-box">
+          <div class="selection-title">Đổi Giao Diện Map</div>
+          <div class="grid-options" id="modal-map-options">
+            <div class="option-item" data-map="cyan">Cyan Cyber</div>
+            <div class="option-item" data-map="pink">Neon Pink</div>
+            <div class="option-item" data-map="gold">Golden Gold</div>
+          </div>
+        </div>
+
+        <button id="btn-close-custom" class="btn">TIẾP TỤC CHƠI ✔</button>
+      </div>
+
+      <!-- Màn hình chiến thắng -->
+      <div id="win-screen" class="screen hidden">
+        <h1 style="color: var(--accent);">THẮNG RỒI! 🎉</h1>
+        <p>Hoàn thành xuất sắc mê cung!<br>Nhận thưởng: <strong style="color: var(--accent);">+5 💎 Kim Cương</strong></p>
+        <div>
+          <button id="btn-next-level" class="btn">MÀN TIẾP ➔</button>
+          <button id="btn-retry" class="btn btn-secondary">CHƠI LẠI 🔄</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <button id="btn-hint" class="btn btn-hint">💡 GỢI Ý ĐƯỜNG ĐI (5 💎)</button>
+    </div>
+
+    <div class="touch-controls">
+      <div class="dbtn dbtn-up" id="ctrl-up">▲</div>
+      <div class="dbtn dbtn-left" id="ctrl-left">◄</div>
+      <div class="dbtn dbtn-down" id="ctrl-down">▼</div>
+      <div class="dbtn dbtn-right" id="ctrl-right">►</div>
+    </div>
+  </div>
+
+  <script>
+    // --- MULTI-TRACK LOFI & CHILL SYNTHWAVE ENGINE ---
+    class ChillMusicEngine {
+      constructor() {
+        this.ctx = null;
+        this.masterGain = null;
+        this.compressor = null;
+        this.muted = false;
+        this.bgmTimer = null;
+        this.step = 0;
+        this.currentTrack = 0; // 0: Midnight Lofi, 1: Tokyo Synthwave, 2: Ambient Space
+
+        // Các bộ hợp âm cho các bài nhạc chill nước ngoài khác nhau
+        this.playlists = [
+          {
+            name: "Midnight Lofi (Chillhop)",
+            chords: [
+              [261.63, 329.63, 392.00, 493.88], // Cmaj7
+              [220.00, 261.63, 329.63, 392.00], // Am7
+              [174.61, 220.00, 261.63, 329.63], // Fmaj7
+              [196.00, 246.94, 293.66, 369.99]  // Gmaj7
+            ],
+            arp: [0, 2, 1, 3, 2, 3, 1, 0],
+            speed: 380
+          },
+          {
+            name: "Tokyo Synthwave (Retro)",
+            chords: [
+              [220.00, 261.63, 329.63, 440.00], // Am
+              [174.61, 220.00, 261.63, 349.23], // F
+              [130.81, 164.81, 196.00, 261.63], // C
+              [164.81, 196.00, 246.94, 329.63]  // E
+            ],
+            arp: [0, 1, 2, 3, 3, 2, 1, 0],
+            speed: 320
+          },
+          {
+            name: "Ambient Space (Deep Chill)",
+            chords: [
+              [146.83, 220.00, 261.63, 329.63], // Dm7
+              [196.00, 246.94, 293.66, 392.00], // G7
+              [130.81, 196.00, 246.94, 329.63], // Cmaj9
+              [110.00, 164.81, 220.00, 261.63]  // Am9
+            ],
+            arp: [0, 3, 1, 2, 0, 1, 3, 2],
+            speed: 450
+          }
+        ];
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+
+          this.compressor = this.ctx.createDynamicsCompressor();
+          this.compressor.threshold.setValueAtTime(-20, this.ctx.currentTime);
+
+          this.masterGain = this.ctx.createGain();
+          this.masterGain.gain.setValueAtTime(0.8, this.ctx.currentTime);
+
+          this.compressor.connect(this.masterGain);
+          this.masterGain.connect(this.ctx.destination);
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      switchTrack() {
+        this.currentTrack = (this.currentTrack + 1) % this.playlists.length;
+        this.step = 0;
+        return this.playlists[this.currentTrack].name;
+      }
+
+      toggleMute() {
+        this.muted = !this.muted;
+        if (this.muted) {
+          this.stopBGM();
+        } else {
+          this.init();
+          this.startBGM();
+        }
+        return this.muted;
+      }
+
+      playSFX(type) {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+
+        if (type === 'move') {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.connect(gain);
+          gain.connect(this.compressor);
+
+          osc.frequency.setValueAtTime(260, now);
+          osc.frequency.exponentialRampToValueAtTime(140, now + 0.06);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.linearRampToValueAtTime(0.001, now + 0.06);
+          osc.start(now);
+          osc.stop(now + 0.06);
+        } else if (type === 'gem') {
+          [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.value = freq;
+            osc.connect(gain);
+            gain.connect(this.compressor);
+
+            const startTime = now + i * 0.04;
+            gain.gain.setValueAtTime(0.15, startTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.2);
+            osc.start(startTime);
+            osc.stop(startTime + 0.2);
+          });
+        } else if (type === 'hint') {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.connect(gain);
+          gain.connect(this.compressor);
+
+          osc.frequency.setValueAtTime(440, now);
+          osc.frequency.exponentialRampToValueAtTime(880, now + 0.2);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.linearRampToValueAtTime(0.001, now + 0.2);
+          osc.start(now);
+          osc.stop(now + 0.2);
+        } else if (type === 'win') {
+          this.stopBGM();
+          [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.value = f;
+            osc.connect(gain);
+            gain.connect(this.compressor);
+            gain.gain.setValueAtTime(0.25, now + i * 0.12);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.12 + 0.5);
+            osc.start(now + i * 0.12);
+            osc.stop(now + i * 0.12 + 0.5);
+          });
+        }
+      }
+
+      startBGM() {
+        if (this.muted) return;
+        this.init();
+        this.stopBGM();
+
+        const playLoop = () => {
+          if (this.muted || !this.ctx) return;
+          const now = this.ctx.currentTime;
+          const currentPlaylist = this.playlists[this.currentTrack];
+
+          const chordIndex = Math.floor(this.step / 8) % currentPlaylist.chords.length;
+          const currentChord = currentPlaylist.chords[chordIndex];
+          const noteIdx = currentPlaylist.arp[this.step % 8];
+          const freq = currentChord[noteIdx] * 1.5;
+
+          if (this.step % 8 === 0) {
+            currentChord.forEach(f => {
+              const pad = this.ctx.createOscillator();
+              const g = this.ctx.createGain();
+              pad.type = 'sine';
+              pad.frequency.value = f;
+              pad.connect(g);
+              g.connect(this.compressor);
+              g.gain.setValueAtTime(0.001, now);
+              g.gain.linearRampToValueAtTime(0.035, now + 0.5);
+              g.gain.exponentialRampToValueAtTime(0.001, now + 2.8);
+              pad.start(now);
+              pad.stop(now + 2.8);
+            });
+          }
+
+          const arp = this.ctx.createOscillator();
+          const g = this.ctx.createGain();
+          arp.type = 'triangle';
+          arp.frequency.value = freq;
+          arp.connect(g);
+          g.connect(this.compressor);
+          g.gain.setValueAtTime(0.001, now);
+          g.gain.linearRampToValueAtTime(0.07, now + 0.04);
+          g.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+          arp.start(now);
+          arp.stop(now + 0.3);
+
+          this.step++;
+          this.bgmTimer = setTimeout(playLoop, currentPlaylist.speed);
+        };
+
+        playLoop();
+      }
+
+      stopBGM() {
+        if (this.bgmTimer) {
+          clearTimeout(this.bgmTimer);
+          this.bgmTimer = null;
+        }
+      }
+    }
+
+    // --- GAME ENGINE LOGIC & MAP THEMES ---
+    const LEVELS = [
+      { id: 1, cols: 9, rows: 9, gems: 2 },
+      { id: 2, cols: 11, rows: 11, gems: 3 },
+      { id: 3, cols: 13, rows: 13, gems: 3 },
+      { id: 4, cols: 15, rows: 15, gems: 4 },
+      { id: 5, cols: 17, rows: 17, gems: 4 },
+      { id: 6, cols: 19, rows: 19, gems: 5 },
+      { id: 7, cols: 21, rows: 21, gems: 5 },
+      { id: 8, cols: 23, rows: 23, gems: 6 },
+    ];
+
+    const MAP_THEMES = {
+      cyan: { wall: '#00f0ff', glow: '#00f0ff', hint: '#e040fb' },
+      pink: { wall: '#ff007f', glow: '#ff007f', hint: '#00f0ff' },
+      gold: { wall: '#ffe600', glow: '#ffe600', hint: '#00f0ff' }
+    };
+
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const audio = new ChillMusicEngine();
+
+    let currentLevelIdx = 0;
+    let unlockedLevel = parseInt(localStorage.getItem('maze_unlocked_level') || '1');
+    let totalGems = localStorage.getItem('maze_gems') !== null ? parseInt(localStorage.getItem('maze_gems')) : 10;
+    let selectedSkin = '🟢';
+    let selectedMapTheme = 'cyan';
+
+    let grid = [], cols, rows, cellSize;
+    let player = { x: 0, y: 0 };
+    let endGoal = { x: 0, y: 0 };
+    let gems = [];
+    let hintPath = [];
+
+    const startScreen = document.getElementById('start-screen');
+    const levelScreen = document.getElementById('level-screen');
+    const customScreen = document.getElementById('custom-screen');
+    const winScreen = document.getElementById('win-screen');
+    const levelGridEl = document.getElementById('level-grid');
+    const levelDisplay = document.getElementById('current-level-display');
+    const gemsDisplay = document.getElementById('gems-display');
+    const toastMsg = document.getElementById('toast-msg');
+
+    function showToast(text) {
+      toastMsg.innerText = text;
+      toastMsg.classList.add('show');
+      setTimeout(() => toastMsg.classList.remove('show'), 2000);
+    }
+
+    function updateUI() {
+      levelDisplay.innerText = currentLevelIdx + 1;
+      gemsDisplay.innerText = totalGems;
+      localStorage.setItem('maze_gems', totalGems.toString());
+      localStorage.setItem('maze_unlocked_level', unlockedLevel.toString());
+    }
+
+    class Cell {
+      constructor(c, r) {
+        this.c = c;
+        this.r = r;
+        this.walls = [true, true, true, true];
+        this.visited = false;
+      }
+      checkNeighbors() {
+        const neighbors = [];
+        const { c, r } = this;
+        const top = grid[index(c, r - 1)];
+        const right = grid[index(c + 1, r)];
+        const bottom = grid[index(c, r + 1)];
+        const left = grid[index(c - 1, r)];
+        if (top && !top.visited) neighbors.push(top);
+        if (right && !right.visited) neighbors.push(right);
+        if (bottom && !bottom.visited) neighbors.push(bottom);
+        if (left && !left.visited) neighbors.push(left);
+        if (neighbors.length > 0) {
+          return neighbors[Math.floor(Math.random() * neighbors.length)];
+        }
+        return undefined;
+      }
+    }
+
+    function index(c, r) {
+      if (c < 0 || r < 0 || c >= cols || r >= rows) return -1;
+      return c + r * cols;
+    }
+
+    function removeWalls(a, b) {
+      const x = a.c - b.c;
+      if (x === 1) { a.walls[3] = false; b.walls[1] = false; }
+      else if (x === -1) { a.walls[1] = false; b.walls[3] = false; }
+      const y = a.r - b.r;
+      if (y === 1) { a.walls[0] = false; b.walls[2] = false; }
+      else if (y === -1) { a.walls[2] = false; b.walls[0] = false; }
+    }
+
+    function generateMaze() {
+      const level = LEVELS[currentLevelIdx];
+      cols = level.cols;
+      rows = level.rows;
+      cellSize = Math.floor(canvas.width / cols);
+
+      grid = [];
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          grid.push(new Cell(c, r));
+        }
+      }
+
+      let current = grid[0];
+      current.visited = true;
+      const stack = [];
+
+      while (true) {
+        const next = current.checkNeighbors();
+        if (next) {
+          next.visited = true;
+          stack.push(current);
+          removeWalls(current, next);
+          current = next;
+        } else if (stack.length > 0) {
+          current = stack.pop();
+        } else {
+          break;
+        }
+      }
+
+      player.x = 0; player.y = 0;
+      endGoal.x = cols - 1; endGoal.y = rows - 1;
+      hintPath = [];
+
+      gems = [];
+      while (gems.length < level.gems) {
+        let rx = Math.floor(Math.random() * cols);
+        let ry = Math.floor(Math.random() * rows);
+        if ((rx !== 0 || ry !== 0) && (rx !== endGoal.x || ry !== endGoal.y)) {
+          if (!gems.some(g => g.x === rx && g.y === ry)) {
+            gems.push({ x: rx, y: ry, collected: false });
+          }
+        }
+      }
+    }
+
+    function findPathBFS() {
+      const startKey = `${player.x},${player.y}`;
+      const queue = [[{ x: player.x, y: player.y }]];
+      const visited = new Set([startKey]);
+
+      while (queue.length > 0) {
+        const path = queue.shift();
+        const curr = path[path.length - 1];
+        if (curr.x === endGoal.x && curr.y === endGoal.y) return path;
+
+        const cell = grid[index(curr.x, curr.y)];
+        const neighbors = [];
+        if (!cell.walls[0]) neighbors.push({ x: curr.x, y: curr.y - 1 });
+        if (!cell.walls[1]) neighbors.push({ x: curr.x + 1, y: curr.y });
+        if (!cell.walls[2]) neighbors.push({ x: curr.x, y: curr.y + 1 });
+        if (!cell.walls[3]) neighbors.push({ x: curr.x - 1, y: curr.y });
+
+        for (let n of neighbors) {
+          const key = `${n.x},${n.y}`;
+          if (!visited.has(key)) {
+            visited.add(key);
+            queue.push([...path, n]);
+          }
+        }
+      }
+      return [];
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const theme = MAP_THEMES[selectedMapTheme];
+
+      // Cập nhật ánh sáng neon bao quanh wrapper
+      document.getElementById('game-wrapper').style.boxShadow = `0 0 35px ${theme.glow}`;
+
+      ctx.strokeStyle = theme.wall;
+      ctx.lineWidth = 2.8;
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = theme.glow;
+
+      for (let i = 0; i < grid.length; i++) {
+        const cell = grid[i];
+        const x = cell.c * cellSize;
+        const y = cell.r * cellSize;
+
+        ctx.beginPath();
+        if (cell.walls[0]) { ctx.moveTo(x, y); ctx.lineTo(x + cellSize, y); }
+        if (cell.walls[1]) { ctx.moveTo(x + cellSize, y); ctx.lineTo(x + cellSize, y + cellSize); }
+        if (cell.walls[2]) { ctx.moveTo(x + cellSize, y + cellSize); ctx.lineTo(x, y + cellSize); }
+        if (cell.walls[3]) { ctx.moveTo(x, y + cellSize); ctx.lineTo(x, y); }
+        ctx.stroke();
+      }
+
+      ctx.shadowBlur = 0;
+
+      if (hintPath.length > 0) {
+        ctx.strokeStyle = theme.hint;
+        ctx.lineWidth = 4;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        hintPath.forEach((pt, idx) => {
+          const hx = pt.x * cellSize + cellSize / 2;
+          const hy = pt.y * cellSize + cellSize / 2;
+          if (idx === 0) ctx.moveTo(hx, hy);
+          else ctx.lineTo(hx, hy);
+        });
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      gems.forEach(gem => {
+        if (!gem.collected) {
+          const gx = gem.x * cellSize + cellSize / 2;
+          const gy = gem.y * cellSize + cellSize / 2;
+          ctx.font = `${cellSize * 0.55}px sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('💎', gx, gy);
+        }
+      });
+
+      const gx = endGoal.x * cellSize + cellSize / 2;
+      const gy = endGoal.y * cellSize + cellSize / 2;
+      ctx.font = `${cellSize * 0.7}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🌀', gx, gy);
+
+      const px = player.x * cellSize + cellSize / 2;
+      const py = player.y * cellSize + cellSize / 2;
+
+      if (selectedSkin === '🟢') {
+        ctx.beginPath();
+        ctx.arc(px, py, cellSize * 0.32, 0, Math.PI * 2);
+        ctx.fillStyle = theme.wall;
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = theme.glow;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      } else {
+        ctx.font = `${cellSize * 0.68}px sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(selectedSkin, px, py);
+      }
+    }
+
+    function movePlayer(dir) {
+      const currentCell = grid[index(player.x, player.y)];
+      let moved = false;
+
+      if (dir === 'up' && !currentCell.walls[0]) { player.y--; moved = true; }
+      else if (dir === 'right' && !currentCell.walls[1]) { player.x++; moved = true; }
+      else if (dir === 'down' && !currentCell.walls[2]) { player.y++; moved = true; }
+      else if (dir === 'left' && !currentCell.walls[3]) { player.x--; moved = true; }
+
+      if (moved) {
+        audio.playSFX('move');
+        if (hintPath.length > 0) hintPath = [];
+
+        gems.forEach(gem => {
+          if (!gem.collected && gem.x === player.x && gem.y === player.y) {
+            gem.collected = true;
+            totalGems++;
+            audio.playSFX('gem');
+            updateUI();
+          }
+        });
+
+        if (player.x === endGoal.x && player.y === endGoal.y) {
+          audio.playSFX('win');
+          setTimeout(handleWin, 200);
+        }
+
+        draw();
+      }
+    }
+
+    function handleWin() {
+      if (currentLevelIdx + 1 >= unlockedLevel && unlockedLevel < LEVELS.length) {
+        unlockedLevel = currentLevelIdx + 2;
+      }
+      totalGems += 5;
+      updateUI();
+      winScreen.classList.remove('hidden');
+    }
+
+    function startLevel(idx) {
+      currentLevelIdx = idx;
+      updateUI();
+      generateMaze();
+      draw();
+      audio.startBGM();
+
+      startScreen.classList.add('hidden');
+      levelScreen.classList.add('hidden');
+      customScreen.classList.add('hidden');
+      winScreen.classList.add('hidden');
+    }
+
+    function renderLevelMenu() {
+      levelGridEl.innerHTML = '';
+      LEVELS.forEach((lvl, i) => {
+        const btn = document.createElement('button');
+        const isUnlocked = i + 1 <= unlockedLevel;
+        btn.className = `level-btn ${isUnlocked ? 'unlocked' : 'locked'}`;
+        btn.innerText = `Màn ${lvl.id}`;
+        if (isUnlocked) {
+          btn.addEventListener('click', () => startLevel(i));
+        }
+        levelGridEl.appendChild(btn);
+      });
+    }
+
+    // --- ICON BUTTONS LISTENERS ---
+    document.getElementById('btn-music-toggle').addEventListener('click', () => {
+      audio.init();
+      const trackName = audio.switchTrack();
+      audio.startBGM();
+      showToast(`🎵 Nhạc: ${trackName}`);
+    });
+
+    document.getElementById('btn-custom-toggle').addEventListener('click', () => {
+      customScreen.classList.remove('hidden');
+    });
+
+    document.getElementById('btn-close-custom').addEventListener('click', () => {
+      customScreen.classList.add('hidden');
+      draw();
+    });
+
+    // --- SKIN & MAP SELECTION SYNC ---
+    function setupSelectors(containerId, type) {
+      document.querySelectorAll(`#${containerId} .option-item`).forEach(opt => {
+        opt.addEventListener('click', () => {
+          document.querySelectorAll(`#${containerId} .option-item`).forEach(o => o.classList.remove('selected'));
+          opt.classList.add('selected');
+          
+          if (type === 'skin') {
+            selectedSkin = opt.getAttribute('data-skin');
+            // Đồng bộ qua lại giữa các menu
+            document.querySelectorAll('[data-skin]').forEach(el => {
+              if (el.getAttribute('data-skin') === selectedSkin) el.classList.add('selected');
+              else el.classList.remove('selected');
+            });
+          } else {
+            selectedMapTheme = opt.getAttribute('data-map');
+            document.querySelectorAll('[data-map]').forEach(el => {
+              if (el.getAttribute('data-map') === selectedMapTheme) el.classList.add('selected');
+              else el.classList.remove('selected');
+            });
+            draw();
+          }
+        });
+      });
+    }
+
+    setupSelectors('skin-options', 'skin');
+    setupSelectors('map-options', 'map');
+    setupSelectors('modal-skin-options', 'skin');
+    setupSelectors('modal-map-options', 'map');
+
+    // Controls
+    window.addEventListener('keydown', (e) => {
+      if (!winScreen.classList.contains('hidden') || !startScreen.classList.contains('hidden') || !customScreen.classList.contains('hidden')) return;
+      switch(e.key) {
+        case 'ArrowUp': case 'w': case 'W': movePlayer('up'); break;
+        case 'ArrowDown': case 's': case 'S': movePlayer('down'); break;
+        case 'ArrowLeft': case 'a': case 'A': movePlayer('left'); break;
+        case 'ArrowRight': case 'd': case 'D': movePlayer('right'); break;
+      }
+    });
+
+    document.getElementById('ctrl-up').addEventListener('click', () => movePlayer('up'));
+    document.getElementById('ctrl-down').addEventListener('click', () => movePlayer('down'));
+    document.getElementById('ctrl-left').addEventListener('click', () => movePlayer('left'));
+    document.getElementById('ctrl-right').addEventListener('click', () => movePlayer('right'));
+
+    document.getElementById('btn-hint').addEventListener('click', () => {
+      if (totalGems >= 5) {
+        totalGems -= 5;
+        updateUI();
+        hintPath = findPathBFS();
+        audio.playSFX('hint');
+        draw();
+      } else {
+        audio.playSFX('move');
+        showToast('Không đủ 5 💎 Kim Cương!');
+      }
+    });
+
+    document.getElementById('btn-start').addEventListener('click', () => {
+      audio.init();
+      audio.startBGM();
+      renderLevelMenu();
+      startScreen.classList.add('hidden');
+      levelScreen.classList.remove('hidden');
+    });
+
+    document.getElementById('btn-back-start').addEventListener('click', () => {
+      levelScreen.classList.add('hidden');
+      startScreen.classList.remove('hidden');
+    });
+
+    document.getElementById('btn-home').addEventListener('click', () => {
+      winScreen.classList.add('hidden');
+      levelScreen.classList.add('hidden');
+      customScreen.classList.add('hidden');
+      startScreen.classList.remove('hidden');
+      audio.stopBGM();
+    });
+
+    document.getElementById('btn-next-level').addEventListener('click', () => {
+      if (currentLevelIdx + 1 < LEVELS.length) {
+        startLevel(currentLevelIdx + 1);
+      } else {
+        renderLevelMenu();
+        winScreen.classList.add('hidden');
+        levelScreen.classList.remove('hidden');
+      }
+    });
+
+    document.getElementById('btn-retry').addEventListener('click', () => {
+      startLevel(currentLevelIdx);
+    });
+
+    function resizeCanvas() {
+      const maxCanvasSize = Math.min(window.innerWidth - 30, 480);
+      canvas.width = maxCanvasSize;
+      canvas.height = maxCanvasSize;
+      if (grid.length > 0) {
+        cellSize = Math.floor(canvas.width / cols);
+        draw();
+      }
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    resizeCanvas();
+    updateUI();
+  </script>
+</body>
+</html>
